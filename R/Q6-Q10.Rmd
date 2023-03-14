@@ -1,0 +1,59 @@
+---
+title: "Homework 2 - Q5"
+author: "Srijan K. Pal"
+date: "2023-02-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+10.(a)
+```{r}
+library(ISLR)
+summary(Carseats)
+```
+
+```{r}
+lm.fit_1 = lm(Sales~Price+Urban+US, data=Carseats)
+summary(lm.fit_1)
+```
+10.(b) Price - The relationship between Price and Sales is negative. The p-value is close to zero and thus, Price has statistical significance in prediction of sales.
+
+UrbanYes - The relationship between UrbanYes and sales is negative. Although the value of the standard error is also high. The high p-value of the UrbanYes suggests that it has very little statistical significance in prediction of Sales.
+
+USYes - The relationship between USYes and sales is positive. The p-value is close to zero and thus, USYes has statistical significance in prediction of sales. 
+
+10.(c) Model: Sales = 13.0434 + (-0.0545)Price + (-0.0219)UrbanYes + (1.2005)USYes
+ 
+10.(d) Based on the low p-values, null-hypothesis can be rejected for both Price and USYes.
+
+10.(e)
+```{r}
+lm.fit_2 = lm(Sales~Price+US, data=Carseats)
+summary(lm.fit_2)
+```
+
+10.(f) Based on the RSE and R-squared value of the linear regression, both the regression models fit similarly to the data, although the model in (e) fits the data slightly better.
+
+10.(g)
+```{r}
+confint(lm.fit_2)
+```
+
+10.(h)
+```{r}
+plot(predict(lm.fit_2), rstudent(lm.fit_2))
+```
+
+All the studentized residuals are within the limit of -3 to 3, which typically is considered to be region beyond which outliers fall. Thus, there might not be any potential outliers from the linear regression.
+
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit_2)
+```
+
+There is only one high leverage points.
+
