@@ -59,37 +59,28 @@ def MyRegression(X, y, split, order=2):
         test_y = np.delete(y, not_split_idx, 0)
 
         # select the training set where the split value is not k (Hint: poly.fit_transform can be used)
-
         poly = PolynomialFeatures(order)
-
         train_X = poly.fit_transform(train_X)
 
         # select the test set where the split value is k (Hint: poly.fit_transform can be used)
-
         test_X = poly.fit_transform(test_X)
 
         # build the regression model (Hint: sklearn.linear_model can be used)
-
         model = LinearRegression()
-
         model.fit(train_X, train_y)
 
         # predict the test_X
-
         predict_y = model.predict(test_X)  # prdiction on test set by model
-
         predict_train_y = model.predict(train_X)   # prediction on training by model
 
         # calculate the mean square error
         # Hint: ((predict - ground_truth) ** 2).mean
-
         MSE = mean_squared_error(predict_y, test_y)
         train_MSE = mean_squared_error(predict_train_y, train_y)
         # MSE = ((predict_y - test_y) ** 2).mean(axis=0)
 
         # record the error
         # Hint: error_dict[k] = xxx
-
         error_dict[k] = MSE
         train_error_dict[k] = train_MSE
 
@@ -105,8 +96,6 @@ def VisualizeError(error_related_to_order): #train_error_related_to_order):
 
     for order, error_list in error_related_to_order.items():
         mean_MSE = sum(error_list) / 10.0
-        #print("test_mean_MSE for order {} is {}".format(order, mean_MSE))
-        #plt.scatter(order, mean_MSE, color='g')
         xx.append(order)
         yy.append(mean_MSE)
 
