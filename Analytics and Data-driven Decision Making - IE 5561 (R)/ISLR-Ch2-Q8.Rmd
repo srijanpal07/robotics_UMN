@@ -1,0 +1,99 @@
+---
+title: "Homework1"
+author: "Srijan K. Pal"
+date: "2023-02-05"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+(a) Loading the data
+
+```{r}
+college = read.csv("College.csv")
+rownames(college) = college[,1]
+fix(college)
+```
+
+(b) Row names conversion
+
+```{r}
+college = college[,-1]
+fix(college)
+```
+
+(c) 
+
+    (i) Summary
+
+```{r}
+summary(college)
+```
+
+(c)(ii) Scatter plot matrix of the first ten columns
+
+```{r}
+pairs(college[,2:11])
+```
+
+(c)(iii) Boxplots of Outstate v/s Private
+
+```{r}
+boxplot(Outstate~Private, data = college)
+```
+
+(c)(iv) Creating a new qualitative variable Elite
+
+```{r}
+Elite = rep("No", nrow(college))
+Elite[college$Top10perc > 50] = "Yes"
+Elite = as.factor(Elite)
+college = data.frame(college, Elite)
+summary(college)
+```
+
+(c)(iv) Boxplot of Outstate v/s Elite
+
+```{r}
+boxplot(Outstate~Elite, data = college)
+```
+
+(c)(v) histograms
+
+```{r}
+par(mfrow=c(2,2))
+hist(college$Accept, breaks=20)
+hist(college$Enroll, breaks=15)
+hist(college$Top10perc, breaks=20)
+hist(college$Top25perc, breaks=10)
+```
+
+(c)(vi)
+
+```{r}
+college[which.max(college$Top10perc),]
+
+acceptance_rate = college$Accept / college$Apps
+college[ which.min( acceptance_rate ), ]
+college[ which.max( acceptance_rate ), ]
+college[ which.max( college$Grad.Rate), ]
+college[ which.min( college$Grad.Rate), ]
+```
+
+According to the data, MIT has the highest number of Top 10 percent student.
+
+A new quantitaive variable acceptance rate is created (accept upon applications).
+
+Princeton has the lowest acceptance rate while Emporia State University is with the highest acceptance rate.
+
+Cazenovia college has the highest graduation rate in contrast to Texas Southern University which has the lowest Graduation rate.
+
+Even though Princeton has the lowest acceptance rate, its graduation rate 99 is pretty high. Emporia State University even though have high acceptance rate, its graduation rate 50 is pretty low although it is not the lowest.

@@ -1,0 +1,165 @@
+---
+title: "Homework 3 - Q5"
+author: "Srijan K. Pal"
+date: "2023-03-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Q10.(a)
+```{r}
+library(ISLR)
+summary(Weekly)
+```
+
+```{r}
+pairs(Weekly)
+```
+
+```{r}
+cor(Weekly[,-9])
+```
+
+Year and Volume seems to have a relationship.
+
+10.(b)
+```{r}
+glm.fit = glm(Direction~.-Today-Year, data = Weekly, family = binomial)
+summary(glm.fit)
+```
+
+Lag2 appears to have some statistical significance with a low Pr(>|z|) = 0.0296.
+
+10.(c)
+```{r}
+attach(Weekly)
+glm.probs = predict(glm.fit, type = "response")
+glm.pred = rep("Down", length(glm.probs))
+glm.pred[glm.probs>0.5] = "Up"
+table(glm.pred, Direction)
+```
+
+Correct predictions % = (54+557)/(54+48+430+557)=56.1%.
+
+Weeks the market goes up the logistic regression is right most of the time, 557/(557+48) = 92.1%. 
+
+Weeks the market goes up the logistic regression is wrong most of the time, 54/(430+54) = 11.2%.
+
+10.(d)
+```{r}
+train = (Year<2009)
+Weekly.0910 = Weekly[!train, ]
+glm.fit = glm(Direction ~ Lag2, data = Weekly, family = binomial, subset = train)
+glm.probs = predict(glm.fit, Weekly.0910, type = "response")
+glm.pred = rep("Down", length(glm.probs))
+glm.pred[glm.probs > 0.5] = "Up"
+Direction.0910 = Direction[!train]
+table(glm.pred, Direction.0910)
+```
+
+```{r}
+mean(glm.pred == Direction.0910)
+```
+
+10.(e)
+```{r}
+library(MASS)
+lda.fit = lda(Direction ~ Lag2, data = Weekly, subset = train)
+lda.pred = predict(lda.fit, Weekly.0910)
+table(lda.pred$class, Direction.0910)
+```
+
+```{r}
+mean(lda.pred$class == Direction.0910)
+```
+
+10.(f)
+```{r}
+library(MASS)
+qda.fit = qda (Direction ~ Lag2, data = Weekly, subset = train)
+qda.class = predict(qda.fit, Weekly.0910)$class
+table(qda.class, Direction.0910)
+```
+
+```{r}
+mean(qda.class == Direction.0910)
+```
+
+10.(g)
+```{r}
+library(class)
+train.X = as.matrix(Lag2[train])
+test.X = as.matrix(Lag2[!train])
+train.Direction = Direction[train]
+set.seed(1)
+knn.pred = knn(train.X, test.X, train.Direction, k = 1)
+table(knn.pred, Direction.0910)
+```
+
+```{r}
+mean(knn.pred == Direction.0910)
+```
+
+10.(h) Logistic regression and LDA methods provide similar test error rates.
+
+10.(i) 
+
+Logistic regression with Lag1, Year*Lag2 and Year:Volume
+```{r}
+glm.fit = glm(Direction ~ Lag1+Year*Lag2+Year:Volume, data = Weekly, family = binomial, subset = train)
+summary(glm.fit)
+```
+
+```{r}
+glm.probs = predict(glm.fit, Weekly.0910, type = "response")
+glm.pred = rep("Down", length(glm.probs))
+glm.pred[glm.probs > 0.5] = "Up"
+Direction.0910 = Direction[!train]
+table(glm.pred, Direction.0910)
+```
+
+```{r}
+mean(glm.pred == Direction.0910)
+```
+
+LDA with Lag2 interaction with Lag1, Year*Lag2 and Year:Volume
+```{r}
+lda.fit = lda(Direction ~ Lag1 + Year * Lag2 + Year:Volume, data = Weekly, subset = train)
+lda.pred = predict(lda.fit, Weekly.0910)
+mean(lda.pred$class == Direction.0910)
+```
+
+```{r}
+qda.fit = qda(Direction ~ Lag2 + sqrt(abs(Lag1)) + Year, data = Weekly, subset = train)
+qda.class = predict(qda.fit, Weekly.0910)$class
+table(qda.class, Direction.0910)
+```
+
+```{r}
+mean(qda.class == Direction.0910)
+```
+
+
+KNN with k =10
+```{r}
+knn.pred = knn(train.X, test.X, train.Direction, k = 5)
+table(knn.pred, Direction.0910)
+```
+
+```{r}
+mean(knn.pred == Direction.0910)
+```
+
+KNN with k = 20
+```{r}
+knn.pred = knn(train.X, test.X, train.Direction, k = 20)
+table(knn.pred, Direction.0910)
+```
+
+```{r}
+mean(knn.pred == Direction.0910)
+```
